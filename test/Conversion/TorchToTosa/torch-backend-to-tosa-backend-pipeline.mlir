@@ -140,6 +140,14 @@ func.func @torch.prim.TupleConstruct() {
 }
 
 // -----
+func.func @torch.aten.size.int(%arg0: !torch.vtensor<[4,2],f32>) -> !torch.int {
+    %c2 = torch.constant.int 2
+    // expected-error @below {{failed to legalize operation 'torch.aten.size.int' that was explicitly marked illegal}}
+    %0 = torch.aten.size.int %arg0, %c2 : !torch.vtensor<[4,2],f32>, !torch.int -> !torch.int
+    return %0 : !torch.int
+}
+
+// -----
 // CHECK-LABEL: conv_within_dequant_quant
 // CHECK-SAME:      %[[ARG0:.*]]: tensor<2x4x7x8xi8>,
 // CHECK-SAME:      %[[ARG1:.*]]: tensor<3x4x3x2xi8>,
