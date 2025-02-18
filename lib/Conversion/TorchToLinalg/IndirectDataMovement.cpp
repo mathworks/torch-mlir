@@ -412,6 +412,21 @@ public:
 };
 } // namespace
 
+static Value wrapIndicesAroundMax(OpBuilder &b, Location loc, Value index,
+                                  Value input, int64_t dim) {
+  // performs the operation : index = index % maxIndex to wrap index around
+  // maxIndex
+  Value maxIndexValue = getDimOp(b, loc, input, dim);
+  maxIndexValue =
+      b.createOrFold<arith::IndexCastOp>(loc, index.getType(), maxIndexValue);
+  Value isBeyondMaxIndices = b.createOrFold<arith::CmpIOp>(
+      loc, arith::CmpIPredicate::sge, index, maxIndexValue);
+  Value wrappedIndices =
+      b.createOrFold<arith::RemSIOp>(loc, index, maxIndexValue);
+  return b.createOrFold<arith::SelectOp>(loc, isBeyondMaxIndices,
+                                         wrappedIndices, index);
+}
+
 namespace {
 // Let's say we have an input tensor: initialized with some random values of
 // size [4, 5, 6]. An index tensor (always 1-d): [0, 2] of size [2], and an
@@ -473,7 +488,6 @@ public:
 
     auto indexingMaps = AffineMap::inferFromExprList({indicesExpr, resultExpr},
                                                      rewriter.getContext());
-
     Value finalRes =
         linalg::GenericOp::create(
             rewriter, loc, initTensor.getType(), ValueRange{indices},
@@ -481,8 +495,10 @@ public:
             /*indexingMaps=*/indexingMaps,
             /*iteratorTypes=*/iteratorTypes,
             [&](OpBuilder &b, Location loc, ValueRange args) {
-              Value index = arith::IndexCastOp::create(
-                  rewriter, loc, rewriter.getIndexType(), args[0]);
+              Value index =
+                  wrapIndicesAroundMax(b, loc, args[0], input, dimInt);
+              index = arith::IndexCastOp::create(
+                  rewriter, loc, rewriter.getIndexType(), index);
               SmallVector<Value> indexTarget;
               for (unsigned i = 0; i < inputRank; i++)
                 indexTarget.push_back(linalg::IndexOp::create(b, loc, i));
