@@ -4,6 +4,7 @@
 # Also available under a BSD-style license. See LICENSE.
 
 import torch
+import torch_mlir
 from .compiler_utils import OutputType
 
 from .compiler_utils_mw import (
@@ -24,6 +25,28 @@ def import_exported_model(
         [torch.ops.aten.lstm.input, torch.ops.aten.gru.input]
     )
     prog = prog.run_decompositions(decomp_table)
+
+    mlir_module = fx.export_and_import(
+        prog,
+        output_type=OutputType.RAW,
+        experimental_support_mutation=experimental_support_mutation,
+    )
+
+    if output_type != 'raw':
+        mlir_module = lower_module(mlir_module, output_type)
+
+    return mlir_module
+
+def lower_module_from_file(mlir_file: str, output_type: str):
+    src = open(mlir_file, "r").read()
+    with torch_mlir.ir.Context() as ctx:
+        torch_mlir.dialects.torch.register_dialect(ctx)
+        with torch_mlir.ir.Location.unknown() as loc:
+            mlir_module = torch_mlir.ir.Module.parse(src)
+    
+    return lower_module(mlir_module, output_type)
+
+def lower_module(mlir_module, output_type: str):
 
     backend_legal_ops = None
 
@@ -65,36 +88,28 @@ def import_exported_model(
             output_type = OutputType.RAW
         case _:
             raise ValueError("Importing PyTorch model failed: Unsupported output type.")
+        
+    backend_legal_op_arg_str = ""
+    if backend_legal_ops is not None:
+        if not len(backend_legal_ops) == 0:
+            backend_legal_op_arg_str = "backend-legal-ops=" + ",".join(
+                backend_legal_ops
+            )
 
-    mlir_module = fx.export_and_import(
-        prog,
-        output_type=OutputType.RAW,
-        experimental_support_mutation=experimental_support_mutation,
+    extra_library_file_name = ""
+    option_string = (
+        "{"
+        + backend_legal_op_arg_str
+        + " extra-library="
+        + extra_library_file_name
+        + "}"
+    )
+    run_pipeline_mw(
+        mlir_module,
+        f"builtin.module(func.func(torch-match-quantized-custom-ops), torchdynamo-export-to-torch-backend-pipeline{option_string})",
+        "Lowering TorchFX IR -> Torch Backend IR",
+        enable_ir_printing=False,
     )
 
-    if output_type != OutputType.RAW:
-        backend_legal_op_arg_str = ""
-        if backend_legal_ops is not None:
-            if not len(backend_legal_ops) == 0:
-                backend_legal_op_arg_str = "backend-legal-ops=" + ",".join(
-                    backend_legal_ops
-                )
-
-        extra_library_file_name = ""
-        option_string = (
-            "{"
-            + backend_legal_op_arg_str
-            + " extra-library="
-            + extra_library_file_name
-            + "}"
-        )
-        run_pipeline_mw(
-            mlir_module,
-            f"builtin.module(func.func(torch-match-quantized-custom-ops), torchdynamo-export-to-torch-backend-pipeline{option_string})",
-            "Lowering TorchFX IR -> Torch Backend IR",
-            enable_ir_printing=False,
-        )
-        verbose = False
-        mlir_module = lower_mlir_module_mw(verbose, output_type, mlir_module)
-
-    return mlir_module
+    verbose = False
+    return lower_mlir_module_mw(verbose, output_type, mlir_module)
