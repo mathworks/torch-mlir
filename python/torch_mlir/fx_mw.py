@@ -15,6 +15,7 @@ from .compiler_utils_mw import (
 from . import fx
 from torch._decomp import get_decompositions
 
+
 def import_exported_model(
     prog: torch.export.ExportedProgram,
     output_type: str,
@@ -32,10 +33,11 @@ def import_exported_model(
         experimental_support_mutation=experimental_support_mutation,
     )
 
-    if output_type != 'raw':
+    if output_type != "raw":
         mlir_module = lower_module(mlir_module, output_type)
 
     return mlir_module
+
 
 def lower_module_from_file(mlir_file: str, output_type: str):
     src = open(mlir_file, "r").read()
@@ -43,8 +45,9 @@ def lower_module_from_file(mlir_file: str, output_type: str):
         torch_mlir.dialects.torch.register_dialect(ctx)
         with torch_mlir.ir.Location.unknown() as loc:
             mlir_module = torch_mlir.ir.Module.parse(src)
-    
+
     return lower_module(mlir_module, output_type)
+
 
 def lower_module(mlir_module, output_type: str):
 
@@ -62,7 +65,8 @@ def lower_module(mlir_module, output_type: str):
                 "aten.adaptive_avg_pool2d",
                 "aten.adaptive_max_pool1d",
                 "aten.adaptive_max_pool2d",
-                "aten.linear"]
+                "aten.linear",
+            ]
         case "linalg_on_tensors":
             output_type = OutputType.LINALG_ON_TENSORS
             backend_legal_ops = [
@@ -70,9 +74,9 @@ def lower_module(mlir_module, output_type: str):
                 "aten.adaptive_avg_pool1d",
                 "aten.adaptive_avg_pool2d",
                 "aten.adaptive_max_pool1d",
-                "aten.adaptive_max_pool2d",                
+                "aten.adaptive_max_pool2d",
                 "aten.unflatten.int",
-                ]
+            ]
         case "tosa_linalg":
             output_type = OutputType.TOSA_LINALG
             backend_legal_ops = [
@@ -83,12 +87,13 @@ def lower_module(mlir_module, output_type: str):
                 "aten.adaptive_max_pool1d",
                 "aten.adaptive_max_pool2d",
                 "aten.linear",
-                "aten.unflatten.int"]
+                "aten.unflatten.int",
+            ]
         case "raw":
             output_type = OutputType.RAW
         case _:
             raise ValueError("Importing PyTorch model failed: Unsupported output type.")
-        
+
     backend_legal_op_arg_str = ""
     if backend_legal_ops is not None:
         if not len(backend_legal_ops) == 0:
