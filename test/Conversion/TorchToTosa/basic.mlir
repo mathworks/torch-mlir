@@ -2149,7 +2149,7 @@ func.func @torch.aten.diagonal$basic(%arg0: !torch.vtensor<[3,4,5,6], si32>) -> 
 // CHECK:           %[[VAL_10:.*]] = tosa.greater %[[VAL_5]], %[[VAL_9]] : (tensor<2xi32>, tensor<1xi32>) -> tensor<2xi1>
 // CHECK:           %[[VAL_11:.*]] = tosa.const_shape  {values = dense<1> : tensor<1xindex>} : () -> !tosa.shape<1>
 // CHECK:           %[[VAL_12:.*]] = tosa.reshape %[[VAL_6]], %[[VAL_11]] : (tensor<i32>, !tosa.shape<1>) -> tensor<1xi32>
-// CHECK:           %[[VAL_13:.*]] = tosa.int_div %[[VAL_5]], %[[VAL_12]] : (tensor<2xi32>, tensor<1xi32>) -> tensor<2xi32>
+// CHECK:           %[[VAL_13:.*]] = tosa.intdiv %[[VAL_5]], %[[VAL_12]] : (tensor<2xi32>, tensor<1xi32>) -> tensor<2xi32>
 // CHECK:           %[[VAL_14:.*]] = "tosa.const"() <{values = dense<0> : tensor<1xi8>}> : () -> tensor<1xi8>
 // CHECK:           %[[VAL_15:.*]] = tosa.mul %[[VAL_13]], %[[VAL_13]], %[[VAL_14]] : (tensor<2xi32>, tensor<2xi32>, tensor<1xi8>) -> tensor<2xi32>
 // CHECK:           %[[VAL_16:.*]] = tosa.sub %[[VAL_5]], %[[VAL_15]] : (tensor<2xi32>, tensor<2xi32>) -> tensor<2xi32>
