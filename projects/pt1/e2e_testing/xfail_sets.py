@@ -5118,11 +5118,12 @@ FX_IMPORTER_TOSA_LINALG_CRASHING_SET = FX_IMPORTER_CRASHING_SET | {
     "InterpolateDynamicModule_sizes_bilinear",
     "InterpolateDynamicModule_scales_recompute_bilinear",
     "InterpolateStaticModule_scales_bilinear_align_corners",
+    "CrossEntropyLossModule_basic",
+    "CrossEntropyLossNoReductionModule_basic",
 }
 
 FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
     "Aten_CastLongModule_basic",
-    "AvgPool1dFloatModule_basic",
     "AvgPool2dCeilModeTrueModule_basic",
     "AvgPool2dDivisorOverrideModule_basic",
     "AvgPool2dFloatModule_basic",
@@ -5145,4 +5146,4 @@ FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
     "ToCopyWithDTypeModule_basic",
     "TrilIndicesAllZerosModule_basic",
     "TriuIndicesAllZerosModule_basic",
-}
+} - {"AdaptiveAvgPool1dGeneralDynamic_basic"}
