@@ -143,6 +143,8 @@ def lowering_pipeline(generate_runtime_verification: bool):
         # This is likely because if things are naturally fusable we usually already
         # emit things in that form from the high level (e.g. single linalg-generic).
         # Other backends are likely to benefit more.
+        "cse",
+        "canonicalize",
         "func.func(linalg-generalize-named-ops)",
         "func.func(linalg-fuse-elementwise-ops)",
         "convert-shape-to-std",
@@ -182,8 +184,8 @@ def lowering_pipeline(generate_runtime_verification: bool):
         "func.func(lower-affine)",
         "convert-scf-to-cf",
     ]
-    if generate_runtime_verification:
-        passes += ["generate-runtime-verification"]
+    # if generate_runtime_verification:
+    #     passes += ["generate-runtime-verification"]
     passes += [
         "func.func(refback-expand-ops-for-llvm)",
         "func.func(arith-expand)",
