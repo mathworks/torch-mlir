@@ -61,7 +61,10 @@ def lower_module_from_file(
 
 
 def lower_module(
-    mlir_module, output_type: str, verbose: bool, enable_ir_printing: bool
+    mlir_module,
+    output_type: str,
+    verbose: bool = False,
+    enable_ir_printing: bool = False,
 ):
 
     backend_legal_ops = None
