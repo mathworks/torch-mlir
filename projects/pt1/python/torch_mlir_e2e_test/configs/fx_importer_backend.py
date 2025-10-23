@@ -32,6 +32,7 @@ BACKEND_LEGAL_OPS = {
         "aten.adaptive_max_pool1d",
         "aten.adaptive_max_pool2d",
         "aten.unflatten.int",
+        "aten.as_strided",
     ],
 }
 

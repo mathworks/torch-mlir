@@ -100,6 +100,7 @@ def lower_module(
                 "aten.adaptive_max_pool1d",
                 "aten.adaptive_max_pool2d",
                 "aten.unflatten.int",
+                "aten.as_strided",
             ]
         case "raw":
             output_type = OutputType.RAW
