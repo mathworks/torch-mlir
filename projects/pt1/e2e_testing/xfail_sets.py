@@ -539,6 +539,10 @@ FX_IMPORTER_CRASHING_SET = LINALG_CRASHING_SET | {
     "RollModule_basic",
     "AdaptiveAvgPool2dDynamicNoBatch_basic",
     "AvgPool2dCHWModule_basic",
+    "MultinomialModule2D_F32",
+    "MultinomialModule2D_basic",
+    "MultinomialModule_basic",
+    "AsStridedWithOffsetModule_basic",
 }
 
 FX_IMPORTER_STABLEHLO_XFAIL_SET = {
