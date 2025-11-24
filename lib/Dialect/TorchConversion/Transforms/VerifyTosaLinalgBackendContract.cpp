@@ -6,8 +6,7 @@
 // Also available under a BSD-style license. See LICENSE.
 //
 //===----------------------------------------------------------------------===//
-
-#include "PassDetail.h"
+#ifdef TORCH_MLIR_ENABLE_TOSA
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Bufferization/IR/Bufferization.h"
@@ -32,9 +31,14 @@ using namespace mlir;
 using namespace mlir::torch;
 using namespace mlir::torch::TorchConversion;
 
+namespace mlir::torch::TorchConversion {
+
+#define GEN_PASS_DEF_VERIFYTOSALINALGBACKENDCONTRACT
+#include "torch-mlir/Dialect/TorchConversion/Transforms/Passes.h.inc"
+
 namespace {
 class VerifyTosaLinalgBackendContractPass
-    : public VerifyTosaLinalgBackendContractBase<
+    : public impl::VerifyTosaLinalgBackendContractBase<
           VerifyTosaLinalgBackendContractPass> {
   void runOnOperation() override {
     MLIRContext *context = &getContext();
@@ -116,6 +120,10 @@ class VerifyTosaLinalgBackendContractPass
 } // namespace
 
 std::unique_ptr<OperationPass<ModuleOp>>
-mlir::torch::TorchConversion::createVerifyTosaLinalgBackendContractPass() {
+createVerifyTosaLinalgBackendContractPass() {
   return std::make_unique<VerifyTosaLinalgBackendContractPass>();
 }
+
+} // namespace mlir::torch::TorchConversion
+
+#endif // TORCH_MLIR_ENABLE_TOSA

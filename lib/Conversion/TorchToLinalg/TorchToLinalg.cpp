@@ -79,7 +79,7 @@ public:
 };
 } // namespace
 
-void mlir::torch::populateTorchToLinalgOnTensorsPatternsAndLegality(
+void populateTorchToLinalgOnTensorsPatternsAndLegality(
     TypeConverter &typeConverter, RewritePatternSet &patterns,
     ConversionTarget &target) {
   torch_to_linalg::populateTensorScalarInteropPatternsAndLegality(

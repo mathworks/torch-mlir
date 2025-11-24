@@ -11,7 +11,6 @@
 #include "torch-mlir/Conversion/TorchToLinalg/TorchToLinalg.h"
 #include "torch-mlir/Conversion/TorchToTosa/TorchToTosa.h"
 
-#include "../PassDetail.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/Complex/IR/Complex.h"
 #include "mlir/Dialect/ControlFlow/IR/ControlFlow.h"
@@ -30,13 +29,18 @@ using namespace mlir;
 using namespace mlir::torch;
 using namespace mlir::torch::Torch;
 
+namespace mlir::torch {
+
+#define GEN_PASS_DEF_CONVERTTORCHTOTOSALINALG
+#include "torch-mlir/Conversion/Passes.h.inc"
+
 // -----------------------------------------------------------------------------
 // The pass
 // -----------------------------------------------------------------------------
 
 namespace {
 class ConvertTorchToTosaLinalg
-    : public ConvertTorchToTosaLinalgBase<ConvertTorchToTosaLinalg> {
+    : public impl::ConvertTorchToTosaLinalgBase<ConvertTorchToTosaLinalg> {
 public:
   void getDependentDialects(DialectRegistry &registry) const override {
     registry.insert<linalg::LinalgDialect>();
@@ -89,6 +93,8 @@ public:
 } // namespace
 
 std::unique_ptr<OperationPass<func::FuncOp>>
-mlir::torch::createConvertTorchToTosaLinalgPass() {
+createConvertTorchToTosaLinalgPass() {
   return std::make_unique<ConvertTorchToTosaLinalg>();
 }
+
+} // namespace mlir::torch

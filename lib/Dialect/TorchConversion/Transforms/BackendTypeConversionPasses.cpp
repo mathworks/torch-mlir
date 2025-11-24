@@ -26,8 +26,10 @@ namespace mlir::torch::TorchConversion {
 
 #define GEN_PASS_DEF_FUNCBACKENDTYPECONVERSION
 #define GEN_PASS_DEF_FUNCBACKENDTYPECONVERSIONFORSTABLEHLO
+#define GEN_PASS_DEF_FUNCBACKENDTYPECONVERSIONFORTOSALINALG
 #define GEN_PASS_DEF_FINALIZINGBACKENDTYPECONVERSION
 #define GEN_PASS_DEF_FINALIZINGBACKENDTYPECONVERSIONFORSTABLEHLO
+#define GEN_PASS_DEF_FINALIZINGBACKENDTYPECONVERSIONFORTOSALINALG
 #include "torch-mlir/Dialect/TorchConversion/Transforms/Passes.h.inc"
 
 //===----------------------------------------------------------------------===//
@@ -106,7 +108,7 @@ struct FuncBackendTypeConversionPass
 };
 
 struct FuncBackendTypeConversionForTosaLinalgPass
-    : public FuncBackendTypeConversionForTosaLinalgBase<
+    : public impl::FuncBackendTypeConversionForTosaLinalgBase<
           FuncBackendTypeConversionForTosaLinalgPass> {
   using FuncBackendTypeConversionForTosaLinalgBase<
       FuncBackendTypeConversionForTosaLinalgPass>::
@@ -167,8 +169,8 @@ std::unique_ptr<OperationPass<ModuleOp>> createFuncBackendTypeConversionPass() {
   return std::make_unique<FuncBackendTypeConversionPass>();
 }
 
-std::unique_ptr<OperationPass<ModuleOp>> mlir::torch::TorchConversion::
-    createFuncBackendTypeConversionForTosaLinalgPass() {
+std::unique_ptr<OperationPass<ModuleOp>>
+createFuncBackendTypeConversionForTosaLinalgPass() {
   return std::make_unique<FuncBackendTypeConversionForTosaLinalgPass>();
 }
 
@@ -281,7 +283,7 @@ struct FinalizingBackendTypeConversionPass
 };
 
 struct FinalizingBackendTypeConversionForTosaLinalgPass
-    : public FinalizingBackendTypeConversionForTosaLinalgBase<
+    : public impl::FinalizingBackendTypeConversionForTosaLinalgBase<
           FinalizingBackendTypeConversionForTosaLinalgPass> {
   using FinalizingBackendTypeConversionForTosaLinalgBase<
       FinalizingBackendTypeConversionForTosaLinalgPass>::
@@ -380,8 +382,8 @@ createFinalizingBackendTypeConversionPass() {
   return std::make_unique<FinalizingBackendTypeConversionPass>();
 }
 
-std::unique_ptr<InterfacePass<FunctionOpInterface>> mlir::torch::
-    TorchConversion::createFinalizingBackendTypeConversionForTosaLinalgPass() {
+std::unique_ptr<InterfacePass<FunctionOpInterface>>
+createFinalizingBackendTypeConversionForTosaLinalgPass() {
   return std::make_unique<FinalizingBackendTypeConversionForTosaLinalgPass>();
 }
 
