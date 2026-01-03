@@ -5165,52 +5165,52 @@ FX_IMPORTER_TOSA_LINALG_CRASHING_SET = FX_IMPORTER_CRASHING_SET | {
 }
 
 FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
-    "ArangeZeroElementOutputModule_basic",
-    "AtenFftRfft2DMiddleDim_basic",  # complex output
+    "ArangeZeroElementOutputModule_basic",  # error: 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xi64>'
+    "AtenFftRfft2DMiddleDim_basic",  # error: 'tosa.transpose' op operand #0 must be tosa-conformant tensor of at least rank 1, but got 'tensor<10x19xcomplex<f32>>'
     "AtenIntTensorByteDtypeModule_basic",  # failed to legalize unresolved materialization from ('tensor<ui8>') to ('tensor<i8>') that remained live after conversion
-    "AtenMatmulQMixedSigni8Transpose_basic",
-    "AtenMatmulQMixedSigni8_basic",
-    "AtenMatmulQint8VV_basic",
-    "AtenMmQMixedSigni8_basic",
-    "AtenMmQuint8_basic",
-    "AvgPool1dNoPadCeilPadNotIncluded_basic",
-    "AvgPool1dPadCeilPadNotIncluded_basic",
-    "BernoulliPModule_basic",
-    "ConstantBoolParameterModule_basic",
-    "ElementwiseDivTensorUnsignedIntegerModule_basic",
-    "LayerNormLastDimModule_basic",
-    "LayerNormModule_basic",
-    "NormalFunctionalModule_basic",
-    "RandnDtypeDeviceModule_basic",
-    "RandnGeneratorF64Module_basic",
-    "RandnGeneratorModule_basic",
-    "RandnLikeDtypeModule_basic",
-    "RandnLikeModule_basic",
-    "RandnModule_basic",
-    "ToCopyBoolDTypeStaticModule_basic",
-    "TrilIndicesAllZerosModule_basic",
-    "TriuIndicesAllZerosModule_basic",
-    "TypeConversionUint8ToF32Module_basic",
-    "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",
-    "TransposedConv2dNegativePadding_basic",
-    "TransposedConv2dPositiveAndNegativePadding_basic",
-    "AvgPool1dIntModule_basic",
-    "AvgPool1dStaticModule_basic",
-    "AvgPool2dIntModule_basic",
-    "HstackBasicComplexModule_basic",
-    "LinspaceEmptyModule_basic",
-    "NativeBatchNorm1DModule_basic",
-    "NativeBatchNorm2DModule_basic",
-    "NativeBatchNorm3DModule_basic",
-    "NativeBatchNormNoneWeightModule_basic",
-    "NumpyTRank0Module_basic",
-    "Permute0RankModule_basic",
-    "SliceStaticComplexInputModule_basic",
-    "TensorsConcatComplex128FloatModule_basic",
-    "TensorsConcatComplex128IntModule_basic",
-    "TensorsConcatComplex64FloatModule_basic",
-    "TrilIndicesNegativeOffsetModule_basic",
-    "TriuIndicesModule_basic",
+    "AtenMatmulQMixedSigni8Transpose_basic",  # ui8
+    "AtenMatmulQMixedSigni8_basic",  # ui8
+    "AtenMmQMixedSigni8_basic",  # ui8
+    "AtenMmQuint8_basic",  # ui8
+    "AvgPool1dNoPadCeilPadNotIncluded_basic",  # 'tosa.avg_pool2d' op expected top/bottom padding to be less than the height of the kernel, got pad_top=1, pad_bottom=2, kernel_y=2
+    "AvgPool1dPadCeilPadNotIncluded_basic",  # 'tosa.avg_pool2d' op expected top/bottom padding to be less than the height of the kernel, got pad_top=1, pad_bottom=2, kernel_y=2
+    "BernoulliPModule_basic",  # SWA
+    "ConstantBoolParameterModule_basic",  # op was not bufferized
+    "ElementwiseDivTensorUnsignedIntegerModule_basic",  # op was not bufferized
+    "LayerNormLastDimModule_basic",  # op was not bufferized
+    "LayerNormModule_basic",  # op was not bufferized
+    "NormalFunctionalModule_basic",  # SWA
+    "RandnDtypeDeviceModule_basic",  # SWA
+    "RandnGeneratorF64Module_basic",  # SWA
+    "RandnGeneratorModule_basic",  # SWA
+    "RandnLikeDtypeModule_basic",  # SWA
+    "RandnLikeModule_basic",  # SWA
+    "RandnModule_basic",  # SWA
+    "ToCopyBoolDTypeStaticModule_basic",  # op was not bufferized
+    "TrilIndicesAllZerosModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x0xi64>'
+    "TriuIndicesAllZerosModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x0xi64>'
+    "TypeConversionUint8ToF32Module_basic",  # op was not bufferized
+    "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",  # SWA
+    "TransposedConv2dNegativePadding_basic",  # 'tosa.transpose_conv2d' op expected out_pad_left > -KW, but got: out_pad_left=-3 and KW=3
+    "TransposedConv2dPositiveAndNegativePadding_basic",  # 'tosa.transpose_conv2d' op expected out_pad_left > -KW, but got: out_pad_left=-3 and KW=3
+    "AvgPool1dIntModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
+    "AvgPool1dStaticModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
+    "AvgPool2dIntModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
+    "HstackBasicComplexModule_basic",  # 'tosa.cast' op operand #0 must be tosa-conformant tensor of number values, but got 'tensor<4x6x4x2xcomplex<f32>>'
+    "LinspaceEmptyModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xf32>'
+    "NativeBatchNorm1DModule_basic",  # tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xf32>'
+    "NativeBatchNorm2DModule_basic",  # tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xf32>'
+    "NativeBatchNorm3DModule_basic",  # tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xf32>'
+    "NativeBatchNormNoneWeightModule_basic",  # tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xf32>'
+    "NumpyTRank0Module_basic",  # 'tosa.transpose' op operand #0 must be tosa-conformant tensor of at least rank 1, but got 'tensor<f32>'
+    "Permute0RankModule_basic",  # 'tosa.transpose' op operand #0 must be tosa-conformant tensor of at least rank 1, but got 'tensor<f32>'
+    "SliceStaticComplexInputModule_basic",  # 'tosa.slice' op operand #0 must be tosa-conformant tensor of at least rank 1, but got 'tensor<6x4x7xcomplex<f32>>'
+    "TensorsConcatComplex128FloatModule_basic",  # 'tosa.cast' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x3x4xcomplex<f64>>'
+    "TensorsConcatComplex128IntModule_basic",  # 'tosa.cast' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x3x4xcomplex<f64>>'
+    "TensorsConcatComplex64FloatModule_basic",  # 'tosa.cast' op operand #0 must be tosa-conformant tensor of number values, but got 'tensor<2x1x4xcomplex<f32>>'
+    "TrilIndicesNegativeOffsetModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xi64>'
+    "TriuIndicesModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xi64>'
+    "ConvolutionBackwardModule2DStrided_basic",  # SWA
 }
 
 FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_TOSA_LINALG_XFAIL_SET - {
