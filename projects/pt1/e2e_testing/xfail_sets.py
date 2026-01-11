@@ -2959,6 +2959,7 @@ ONNX_XFAIL_SET = {
     "ConvolutionModule2DGroups_basic",
     "Convolution2DSingleIntTupleModule_basic",
     "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",
+    "ConvolutionModule2DTransposePositiveEffectivePadding_basic",
     "ConvolutionModule2DTransposeScalarTupleParams_basic",
     "ConvolutionModule2DTransposeStrided_basic",
     "ConvolutionModule2DTranspose_basic",
@@ -3692,8 +3693,6 @@ FX_IMPORTER_TOSA_XFAIL_SET = {
     "Aten_EmbeddingBagExample_basic",
     "AvgPool1dIntModule_basic",
     "AvgPool1dStaticModule_basic",
-    "AvgPool1dNoPadCeilPadNotIncluded_basic",
-    "AvgPool1dPadCeilPadNotIncluded_basic",
     "AvgPool3dDiffKernelsStridesNoPadCeilPadNotIncluded_basic",
     "AvgPool3dDiffKernelsStridesPadCeilPadNotIncluded_basic",
     "AvgPool2dDivisorOverrideModule_basic",
@@ -3727,11 +3726,9 @@ FX_IMPORTER_TOSA_XFAIL_SET = {
     "ConvolutionBackwardModule2DDilated_basic",
     "ConvolutionBackwardModule2DPadded_basic",
     "ConvolutionBackwardModule2DStridedPaddedDilatedGrouped_basic",
-    "ConvolutionBackwardModule2DStrided_basic",
     "ConvolutionBackwardModule3DStatic_basic",
     "ConvolutionBackwardModule2D_basic",
     "ConvolutionModule2DGroups_basic",
-    "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",
     "ConvolutionModule2DGroupedTranspose_basic",
     "ConvolutionModule3DGroups_basic",
     "ConvolutionModule3DGroupsStrided_basic",
@@ -3967,8 +3964,6 @@ FX_IMPORTER_TOSA_XFAIL_SET = {
     "TransposedConv1dNegativePadding_basic",
     "TransposedConv1dNegativePaddingUnitStrideDyn_basic",
     "TransposedConv1dNegativePaddingLarge_basic",
-    "TransposedConv2dNegativePadding_basic",
-    "TransposedConv2dPositiveAndNegativePadding_basic",
     "TransposedConv3dNegativePadding_basic",
     "UnsafeViewCollapseDynamicWithAtenSizeIntModule_basic",
     "InterpolateDynamicModule_sizes_nearest",
@@ -4368,6 +4363,7 @@ ONNX_TOSA_XFAIL_SET = {
     "ConvolutionBackwardModule2D_basic",
     "ConvolutionModule2DGroups_basic",
     "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",
+    "ConvolutionModule2DTransposePositiveEffectivePadding_basic",
     "ConvolutionModule2DTransposeStridedStatic_basic",
     "ConvolutionModule2DTransposeScalarTupleParams_basic",
     "ConvolutionModule2DTransposeStrided_basic",
@@ -5172,8 +5168,6 @@ FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
     "AtenMatmulQMixedSigni8_basic",  # ui8
     "AtenMmQMixedSigni8_basic",  # ui8
     "AtenMmQuint8_basic",  # ui8
-    "AvgPool1dNoPadCeilPadNotIncluded_basic",  # 'tosa.avg_pool2d' op expected top/bottom padding to be less than the height of the kernel, got pad_top=1, pad_bottom=2, kernel_y=2
-    "AvgPool1dPadCeilPadNotIncluded_basic",  # 'tosa.avg_pool2d' op expected top/bottom padding to be less than the height of the kernel, got pad_top=1, pad_bottom=2, kernel_y=2
     "BernoulliPModule_basic",  # SWA
     "ConstantBoolParameterModule_basic",  # op was not bufferized
     "ElementwiseDivTensorUnsignedIntegerModule_basic",  # op was not bufferized
@@ -5190,9 +5184,6 @@ FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
     "TrilIndicesAllZerosModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x0xi64>'
     "TriuIndicesAllZerosModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<2x0xi64>'
     "TypeConversionUint8ToF32Module_basic",  # op was not bufferized
-    "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",  # SWA
-    "TransposedConv2dNegativePadding_basic",  # 'tosa.transpose_conv2d' op expected out_pad_left > -KW, but got: out_pad_left=-3 and KW=3
-    "TransposedConv2dPositiveAndNegativePadding_basic",  # 'tosa.transpose_conv2d' op expected out_pad_left > -KW, but got: out_pad_left=-3 and KW=3
     "AvgPool1dIntModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
     "AvgPool1dStaticModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
     "AvgPool2dIntModule_basic",  # error: 'arith.trunci' op operand type 'i32' and result type 'i64' are cast incompatible
@@ -5210,7 +5201,6 @@ FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_XFAIL_SET | {
     "TensorsConcatComplex64FloatModule_basic",  # 'tosa.cast' op operand #0 must be tosa-conformant tensor of number values, but got 'tensor<2x1x4xcomplex<f32>>'
     "TrilIndicesNegativeOffsetModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xi64>'
     "TriuIndicesModule_basic",  # 'tosa.const' op result #0 must be tosa-conformant tensor of number values, but got 'tensor<0xi64>'
-    "ConvolutionBackwardModule2DStrided_basic",  # SWA
 }
 
 FX_IMPORTER_TOSA_LINALG_XFAIL_SET = FX_IMPORTER_TOSA_LINALG_XFAIL_SET - {
