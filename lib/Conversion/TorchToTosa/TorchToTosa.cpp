@@ -2901,6 +2901,20 @@ LogicalResult ConvertAtenOp<AtenConvolutionOp>::matchAndRewrite(
     Value bias = *biasValueOr;
     Type biasElemTy = cast<RankedTensorType>(bias.getType()).getElementType();
 
+    // TOSA 'out_pad' is a 4D array {top,bottom,left,right}.
+    // Map from PyTorch's (padding, output_padding):
+    //   out_pad_total(H/W) = output_padding(H/W) - 2*padding(H/W)
+    // Negative values need to be handled by cropping the output.
+    int64_t outPadH = outPaddingList[0] - 2 * paddingList[0];
+    int64_t outPadW = outPaddingList[1] - 2 * paddingList[1];
+
+    // Track if we need to slice to crop the output
+    bool needSlicing = (outPadH < 0 || outPadW < 0);
+    if (needSlicing)
+      return rewriter.notifyMatchFailure(
+          op, "Unimplemented: negative output padding in transposed "
+              "convolution requires slicing");
+
     SmallVector<int64_t> ohwiWeightShape =
         permuteShape(weightShape, transposedWeightPermutation);
     auto ohwiWeightType = RankedTensorType::get(
@@ -2911,16 +2925,6 @@ LogicalResult ConvertAtenOp<AtenConvolutionOp>::matchAndRewrite(
             getTypeConverter()->convertType(ohwiWeightType), weight,
             rewriter.getDenseI32ArrayAttr(transposedWeightPermutation))
             .getResult();
-
-    // TOSA 'out_pad' is a 4D array {top,bottom,left,right}.
-    // Map from PyTorch's (padding, output_padding):
-    //   out_pad_total(H/W) = output_padding(H/W) - 2*padding(H/W)
-    // Negative values need to be handled by cropping the output.
-    int64_t outPadH = outPaddingList[0] - 2 * paddingList[0];
-    int64_t outPadW = outPaddingList[1] - 2 * paddingList[1];
-
-    // Track if we need to slice to crop the output
-    bool needSlicing = (outPadH < 0 || outPadW < 0);
 
     auto calculatePaddingOrCropping =
         [](int64_t outPad) -> std::tuple<int64_t, int64_t, int64_t, int64_t> {
