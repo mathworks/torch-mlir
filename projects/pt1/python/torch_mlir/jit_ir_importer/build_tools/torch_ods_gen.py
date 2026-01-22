@@ -612,7 +612,8 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
         "aten::conv_tbc_backward : (Tensor, Tensor, Tensor, Tensor, int) -> (Tensor, Tensor, Tensor)"
     )
     emit(
-        "aten::convolution : (Tensor, Tensor, Tensor?, int[], int[], int[], bool, int[], int) -> (Tensor)"
+        "aten::convolution : (Tensor, Tensor, Tensor?, int[], int[], int[], bool, int[], int) -> (Tensor)",
+        has_canonicalizer=True,
     )
     emit(
         "aten::_convolution : (Tensor, Tensor, Tensor?, int[], int[], int[], bool, int[], int, bool, bool, bool, bool) -> (Tensor)"
@@ -657,7 +658,10 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
     emit(
         "aten::max_pool1d_with_indices : (Tensor, int[], int[], int[], int[], bool) -> (Tensor, Tensor)"
     )
-    emit("aten::max_pool2d : (Tensor, int[], int[], int[], int[], bool) -> (Tensor)")
+    emit(
+        "aten::max_pool2d : (Tensor, int[], int[], int[], int[], bool) -> (Tensor)",
+        has_canonicalizer=True,
+    )
     emit("aten::max_unpool2d : (Tensor, Tensor, int[]) -> (Tensor)")
     emit(
         "aten::max_pool2d_with_indices : (Tensor, int[], int[], int[], int[], bool) -> (Tensor, Tensor)",
@@ -666,7 +670,10 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
     emit(
         "aten::max_pool2d_with_indices_backward : (Tensor, Tensor, int[], int[], int[], int[], bool, Tensor) -> (Tensor)"
     )
-    emit("aten::max_pool3d : (Tensor, int[], int[], int[], int[], bool) -> (Tensor)")
+    emit(
+        "aten::max_pool3d : (Tensor, int[], int[], int[], int[], bool) -> (Tensor)",
+        has_canonicalizer=True,
+    )
     emit("aten::max_unpool3d : (Tensor, Tensor, int[], int[], int[]) -> (Tensor)")
     emit(
         "aten::max_pool3d_with_indices : (Tensor, int[], int[], int[], int[], bool) -> (Tensor, Tensor)",
@@ -677,13 +684,15 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
     )
     emit("aten::avg_pool1d : (Tensor, int[], int[], int[], bool, bool) -> (Tensor)")
     emit(
-        "aten::avg_pool2d : (Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)"
+        "aten::avg_pool2d : (Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)",
+        has_canonicalizer=True,
     )
     emit(
         "aten::avg_pool2d_backward : (Tensor, Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)"
     )
     emit(
-        "aten::avg_pool3d : (Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)"
+        "aten::avg_pool3d : (Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)",
+        has_canonicalizer=True,
     )
     emit(
         "aten::avg_pool3d_backward : (Tensor, Tensor, int[], int[], int[], bool, bool, int?) -> (Tensor)"

@@ -7119,6 +7119,7 @@ def Torch_AtenConvolutionOp : Torch_Op<"aten.convolution", [
       printDefaultTorchOp(printer, *this, 9, 1);
     }
   }];
+  let hasCanonicalizer = 1;
 }
 
 def Torch_Aten_ConvolutionOp : Torch_Op<"aten._convolution", [
@@ -7744,6 +7745,7 @@ def Torch_AtenMaxPool2dOp : Torch_Op<"aten.max_pool2d", [
       printDefaultTorchOp(printer, *this, 6, 1);
     }
   }];
+  let hasCanonicalizer = 1;
 }
 
 def Torch_AtenMaxUnpool2dOp : Torch_Op<"aten.max_unpool2d", [
@@ -7857,6 +7859,7 @@ def Torch_AtenMaxPool3dOp : Torch_Op<"aten.max_pool3d", [
       printDefaultTorchOp(printer, *this, 6, 1);
     }
   }];
+  let hasCanonicalizer = 1;
 }
 
 def Torch_AtenMaxUnpool3dOp : Torch_Op<"aten.max_unpool3d", [
@@ -8001,6 +8004,7 @@ def Torch_AtenAvgPool2dOp : Torch_Op<"aten.avg_pool2d", [
       printDefaultTorchOp(printer, *this, 7, 1);
     }
   }];
+  let hasCanonicalizer = 1;
 }
 
 def Torch_AtenAvgPool2dBackwardOp : Torch_Op<"aten.avg_pool2d_backward", [
@@ -8060,6 +8064,7 @@ def Torch_AtenAvgPool3dOp : Torch_Op<"aten.avg_pool3d", [
       printDefaultTorchOp(printer, *this, 7, 1);
     }
   }];
+  let hasCanonicalizer = 1;
 }
 
 def Torch_AtenAvgPool3dBackwardOp : Torch_Op<"aten.avg_pool3d_backward", [

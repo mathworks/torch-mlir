@@ -3596,3 +3596,58 @@ func.func @torch.aten.full$int_fold() -> !torch.vtensor<[2,1,4],si64> {
   %1 = torch.aten.full %0, %int-Inf, %none, %none, %none, %none : !torch.list<int>, !torch.int, !torch.none, !torch.none, !torch.none, !torch.none -> !torch.vtensor<[2,1,4],si64>
   return %1 : !torch.vtensor<[2,1,4],si64>
 }
+
+// -----
+// CHECK-LABEL:   func.func @torch.aten.avg_pool2d.single_int_tuple(
+// CHECK-SAME:      %[[ARG0:.*]]: !torch.vtensor<[2,4,20,20],f32>) -> !torch.vtensor<[2,4,9,9],f32> {
+// CHECK:           %[[NONE:.*]] = torch.constant.none
+// CHECK:           %[[FALSE:.*]] = torch.constant.bool false
+// CHECK:           %[[C_6:.*]] = torch.constant.int 6
+// CHECK:           %[[C_1:.*]] = torch.constant.int 1
+// CHECK:           %[[C_2:.*]] = torch.constant.int 2
+// CHECK:           %[[KERNEL:.*]] = torch.prim.ListConstruct %[[C_6]], %[[C_6]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[STRIDE:.*]] = torch.prim.ListConstruct %[[C_1]], %[[C_1]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[PAD:.*]] = torch.prim.ListConstruct %[[C_2]], %[[C_2]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[POOL:.*]] = torch.aten.avg_pool2d %[[ARG0]], %[[KERNEL]], %[[PAD]], %[[STRIDE]], %[[FALSE]], %[[FALSE]], %[[NONE]] : !torch.vtensor<[2,4,20,20],f32>, !torch.list<int>, !torch.list<int>, !torch.list<int>, !torch.bool, !torch.bool, !torch.none -> !torch.vtensor<[2,4,9,9],f32>
+// CHECK:           return %[[POOL]]
+func.func @torch.aten.avg_pool2d.single_int_tuple(%arg0: !torch.vtensor<[2,4,20,20],f32>) -> !torch.vtensor<[2,4,9,9],f32> {
+    %int6 = torch.constant.int 6
+    %0 = torch.prim.ListConstruct %int6 : (!torch.int) -> !torch.list<int>
+    %int2 = torch.constant.int 2
+    %1 = torch.prim.ListConstruct %int2 : (!torch.int) -> !torch.list<int>
+    %int1 = torch.constant.int 1
+    %2 = torch.prim.ListConstruct %int1 : (!torch.int) -> !torch.list<int>
+    %false = torch.constant.bool false
+    %false_0 = torch.constant.bool false
+    %none = torch.constant.none
+    %3 = torch.aten.avg_pool2d %arg0, %0, %1, %2, %false, %false_0, %none : !torch.vtensor<[2,4,20,20],f32>, !torch.list<int>, !torch.list<int>, !torch.list<int>, !torch.bool, !torch.bool, !torch.none -> !torch.vtensor<[2,4,9,9],f32>
+    return %3 : !torch.vtensor<[2,4,9,9],f32>
+  }
+
+// -----
+
+// CHECK-LABEL:   func.func @torch.aten.convolution.single_int_tuple(
+// CHECK-SAME:                                                       %[[ARG0:.*]]: !torch.vtensor<[1,1,5,5],f32>) -> !torch.vtensor<[1,1,5,5],f32> {
+// CHECK:           %[[ISTRANSPOSE:.*]] = torch.constant.bool true
+// CHECK:           %[[WEIGHTS:.*]] = torch.vtensor.literal(dense<-7.486820e-03> : tensor<1x1x1x1xf32>) : !torch.vtensor<[1,1,1,1],f32>
+// CHECK:           %[[BIAS:.*]] = torch.vtensor.literal(dense<0.536443591> : tensor<1xf32>) : !torch.vtensor<[1],f32>
+// CHECK:           %[[INT1:.*]] = torch.constant.int 1
+// CHECK:           %[[INT0:.*]] = torch.constant.int 0
+// CHECK:           %[[STRIDE:.*]] = torch.prim.ListConstruct %[[INT1]], %[[INT1]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[PADDING:.*]] = torch.prim.ListConstruct %[[INT0]], %[[INT0]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[DILATION:.*]] = torch.prim.ListConstruct %[[INT1]], %[[INT1]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[OUTPUT_PADDING:.*]] = torch.prim.ListConstruct %[[INT0]], %[[INT0]] : (!torch.int, !torch.int) -> !torch.list<int>
+// CHECK:           %[[OUT:.*]] = torch.aten.convolution %[[ARG0]], %[[WEIGHTS]], %[[BIAS]], %[[STRIDE]], %[[PADDING]], %[[DILATION]], %[[ISTRANSPOSE]], %[[OUTPUT_PADDING]], %[[INT1]] : !torch.vtensor<[1,1,5,5],f32>, !torch.vtensor<[1,1,1,1],f32>, !torch.vtensor<[1],f32>, !torch.list<int>, !torch.list<int>, !torch.list<int>, !torch.bool, !torch.list<int>, !torch.int -> !torch.vtensor<[1,1,5,5],f32>
+func.func @torch.aten.convolution.single_int_tuple(%arg0: !torch.vtensor<[1,1,5,5],f32>) -> !torch.vtensor<[1,1,5,5],f32> {
+    %w = torch.vtensor.literal(dense<-7.486820e-03> : tensor<1x1x1x1xf32>) : !torch.vtensor<[1,1,1,1],f32>
+    %b = torch.vtensor.literal(dense<0.536443591> : tensor<1xf32>) : !torch.vtensor<[1],f32>
+    %int1 = torch.constant.int 1
+    %stride = torch.prim.ListConstruct %int1 : (!torch.int) -> !torch.list<int>
+    %int0 = torch.constant.int 0
+    %padding = torch.prim.ListConstruct %int0 : (!torch.int) -> !torch.list<int>
+    %dilation = torch.prim.ListConstruct %int1 : (!torch.int) -> !torch.list<int>
+    %true = torch.constant.bool true
+    %output_padding = torch.prim.ListConstruct %int0 : (!torch.int) -> !torch.list<int>
+    %6 = torch.aten.convolution %arg0, %w, %b, %stride, %padding, %dilation, %true, %output_padding, %int1 : !torch.vtensor<[1,1,5,5],f32>, !torch.vtensor<[1,1,1,1],f32>, !torch.vtensor<[1],f32>, !torch.list<int>, !torch.list<int>, !torch.list<int>, !torch.bool, !torch.list<int>, !torch.int -> !torch.vtensor<[1,1,5,5],f32>
+    return %6 : !torch.vtensor<[1,1,5,5],f32>
+}
