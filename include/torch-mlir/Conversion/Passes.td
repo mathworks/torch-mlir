@@ -140,6 +140,14 @@ def ConvertTorchToTosaLinalg : Pass<"convert-torch-to-tosa-linalg", "func::FuncO
   let constructor = "mlir::torch::createConvertTorchToTosaLinalgPass()";
 }
 
+def GlobalizeTorchParams : Pass<"globalize-torch-params", "ModuleOp"> {
+  let summary = "Globalize torch.tensor.vliteral that are parameters";
+  let description = [{
+    This pass tries to hoist torch.tensor.vliteral that are parameters to global as ml_program.global ops.
+  }];
+  let constructor = "mlir::torch::createGlobalizeTorchParamsPass()";
+}
+
 def ConvertTorchToTMTensor : Pass<"convert-torch-to-tmtensor", "func::FuncOp"> {
   let summary = "Convert recognized Torch ops to TMTensor/Linalg ops";
   let description = [{
