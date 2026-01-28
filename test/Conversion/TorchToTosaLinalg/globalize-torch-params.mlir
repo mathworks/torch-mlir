@@ -44,6 +44,23 @@ func.func @forward() -> (!torch.vtensor<[3,3],f32>, !torch.vtensor<[3],f32>) {
 
 // -----
 
+// COM: Test that parameter literals without all the required attributes are not converted
+
+// CHECK-LABEL: func.func @forward
+// CHECK: torch.vtensor.literal(dense<1.000000e+00> : tensor<3x3xf32>)
+// CHECK: torch.vtensor.literal(dense<0.000000e+00> : tensor<3xf32>)
+// CHECK: torch.vtensor.literal(dense<2.000000e+00> : tensor<3xf32>)
+// CHECK-NOT: ml_program.global
+
+func.func @forward() -> (!torch.vtensor<[3,3],f32>, !torch.vtensor<[3],f32>, !torch.vtensor<[3],f32>) {
+  %weight = torch.vtensor.literal(dense<1.0> : tensor<3x3xf32>) {parameter_name = "weight", parameter_type = "PARAMETER"} : !torch.vtensor<[3,3],f32>
+  %bias = torch.vtensor.literal(dense<0.0> : tensor<3xf32>) {parameter_index = 1 : i64, parameter_type = "PARAMETER"} : !torch.vtensor<[3],f32>
+  %buf = torch.vtensor.literal(dense<2.0> : tensor<3xf32>) {parameter_index = 1 : i64, parameter_name = "bias"} : !torch.vtensor<[3],f32>
+  return %weight, %bias, %buf : !torch.vtensor<[3,3],f32>, !torch.vtensor<[3],f32>, !torch.vtensor<[3],f32>
+}
+
+// -----
+
 // COM: Test that non-parameter literals are not converted
 
 // CHECK-LABEL: func.func @forward
