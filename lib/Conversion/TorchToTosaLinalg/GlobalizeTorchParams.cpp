@@ -30,6 +30,25 @@ namespace mlir::torch {
 #include "torch-mlir/Conversion/Passes.h.inc"
 
 // -----------------------------------------------------------------------------
+// Utility functions
+// -----------------------------------------------------------------------------
+
+namespace {
+
+// Helper function to check if an operation is a parameter or buffer
+static bool isParameterOrBuffer(Operation *op) {
+  auto paramNameAttr = op->getAttrOfType<StringAttr>("parameter_name");
+  auto paramTypeAttr = op->getAttrOfType<StringAttr>("parameter_type");
+  auto paramIndexAttr = op->getAttrOfType<IntegerAttr>("parameter_index");
+
+  return paramNameAttr && paramTypeAttr && paramIndexAttr &&
+         (paramTypeAttr.getValue() == "PARAMETER" ||
+          paramTypeAttr.getValue() == "BUFFER");
+}
+
+} // namespace
+
+// -----------------------------------------------------------------------------
 // Patterns
 // -----------------------------------------------------------------------------
 
@@ -46,22 +65,14 @@ struct GlobalizeValueTensorLiteralPattern
   matchAndRewrite(ValueTensorLiteralOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const override {
 
-    // Only convert if this is a parameter (has parameter_name and
-    // parameter_type attributes)
+    // Only convert if this is a parameter or buffer
+    if (!isParameterOrBuffer(op))
+      return rewriter.notifyMatchFailure(
+          op, "Expected parameter or buffer attributes");
+
     auto paramNameAttr = op->getAttrOfType<StringAttr>("parameter_name");
-    if (!paramNameAttr)
-      return rewriter.notifyMatchFailure(op,
-                                         "Expected parameter_name attribute");
-
     auto paramTypeAttr = op->getAttrOfType<StringAttr>("parameter_type");
-    if (!paramTypeAttr || paramTypeAttr.getValue() != "PARAMETER")
-      return rewriter.notifyMatchFailure(op,
-                                         "Expected parameter_type attribute");
-
     auto paramIndexAttr = op->getAttrOfType<IntegerAttr>("parameter_index");
-    if (!paramIndexAttr)
-      return rewriter.notifyMatchFailure(op,
-                                         "Expected parameter_index attribute");
 
     auto module = op->getParentOfType<ModuleOp>();
     if (!module)
@@ -143,8 +154,9 @@ struct GlobalizeValueTensorLiteralPattern
         /*sym_visibility=*/nullptr);
     globalOp.setPrivate();
 
-    // Preserve parameter_index attribute on the global
+    // Preserve parameter_index and parameter_type attributes on the global
     globalOp->setAttr("parameter_index", paramIndexAttr);
+    globalOp->setAttr("parameter_type", paramTypeAttr);
 
     // Replace the vtensor.literal with a global_load
     rewriter.setInsertionPoint(op);
@@ -313,13 +325,8 @@ public:
     // Mark vtensor.literal ops with parameter attributes as illegal
     target.addDynamicallyLegalOp<ValueTensorLiteralOp>(
         [](ValueTensorLiteralOp op) {
-          auto paramNameAttr = op->getAttrOfType<StringAttr>("parameter_name");
-          auto paramTypeAttr = op->getAttrOfType<StringAttr>("parameter_type");
-          auto paramIndexAttr =
-              op->getAttrOfType<IntegerAttr>("parameter_index");
-          // Legal if it's NOT a parameter
-          return !paramNameAttr || !paramTypeAttr ||
-                 paramTypeAttr.getValue() != "PARAMETER" || !paramIndexAttr;
+          // Legal if it's NOT a parameter or buffer
+          return !isParameterOrBuffer(op);
         });
 
     TypeConverter typeConverter;
