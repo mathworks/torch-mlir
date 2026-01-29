@@ -35,6 +35,8 @@ func.func @convTransposeNegativeEffectivePadding(%input: !torch.vtensor<[1,64,1,
 
 
 // -----
+// XFAIL: *
+// COM: This test will fail in mw_main as we bail out for negative padding
 // COM: Test case for transpose convolution with positive effective padding to verify no slice operation is emitted
 // CHECK-LABEL: func.func @convTransposePositiveEffectivePadding
 // CHECK: tosa.transpose_conv2d

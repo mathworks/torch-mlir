@@ -2,17 +2,8 @@
 # See https://llvm.org/LICENSE.txt for license information.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 # Also available under a BSD-style license. See LICENSE.
-from enum import Enum
-from io import StringIO
-import os
-import sys
-import tempfile
-from typing import Union, List
 
-import torch
 from .passmanager import PassManager
-from .ir import StringAttr
-
 from torch_mlir.compiler_utils import OutputType
 
 
@@ -41,9 +32,10 @@ def lower_mlir_module_mw(verbose, output_type, module):
         return module
 
     if output_type == OutputType.TOSA:
+        pipeline = "builtin.module(torch-backend-to-tosa-backend-pipeline)"
         run_pipeline_mw(
             module,
-            "builtin.module(torch-backend-to-tosa-backend-pipeline)",
+            pipeline,
             "Lowering Torch Backend IR -> TOSA Backend IR",
         )
         if verbose:
@@ -53,9 +45,10 @@ def lower_mlir_module_mw(verbose, output_type, module):
         return module
 
     if output_type == OutputType.LINALG_ON_TENSORS:
+        pipeline = "builtin.module(torch-backend-to-linalg-on-tensors-backend-pipeline)"
         run_pipeline_mw(
             module,
-            "builtin.module(torch-backend-to-linalg-on-tensors-backend-pipeline)",
+            pipeline,
             "Lowering Torch Backend IR -> Linalg-on-Tensors Backend IR",
         )
         if verbose:
@@ -65,9 +58,10 @@ def lower_mlir_module_mw(verbose, output_type, module):
         return module
 
     elif output_type == OutputType.TOSA_LINALG:
+        pipeline = "builtin.module(torch-backend-to-tosa-linalg-backend-pipeline)"
         run_pipeline_mw(
             module,
-            "builtin.module(torch-backend-to-tosa-linalg-backend-pipeline)",
+            pipeline,
             "Lowering Torch Backend IR -> TOSA_LINALG Backend IR",
         )
         if verbose:

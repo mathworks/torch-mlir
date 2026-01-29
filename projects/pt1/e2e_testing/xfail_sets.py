@@ -4025,6 +4025,27 @@ FX_IMPORTER_TOSA_XFAIL_SET = {
     "ElementwiseReluModule_bfloat16",
 }
 
+# The following failures are due to disabling transpose convolution lowering for negative output padding which only leads to SWA for TransposedConv2dWithCustomParams_basic
+FX_IMPORTER_TOSA_XFAIL_SET_MW_MAIN = {
+    "ConvTranspose2DQInt8_basic",
+    "Conv_Transpose2dModule_basic",
+    "Conv_Transpose2dStaticModule_basic",
+    "ConvolutionBackwardModule2DStatic_basic",
+    "ConvolutionBackwardModule2DStrided_basic",
+    "ConvolutionModule2DTransposeNonUnitOutputPadding_basic",
+    "ConvolutionModule2DTransposeScalarTupleParams_basic",
+    "ConvolutionModule2DTransposeStridedStatic_basic",
+    "ConvolutionModule2DTransposeStrided_basic",
+    "ConvolutionModule2DTranspose_basic",
+    "TransposedConv2dNegativePadding_basic",
+    "TransposedConv2dPositiveAndNegativePadding_basic",
+    "TransposedConv2dWithCustomParams_basic",
+}
+
+FX_IMPORTER_TOSA_XFAIL_SET = (
+    FX_IMPORTER_TOSA_XFAIL_SET | FX_IMPORTER_TOSA_XFAIL_SET_MW_MAIN
+)
+
 ONNX_TOSA_CRASHING_SET = {
     "ScatterSrcStaticModule_basic",
     "StdCorrectionEmptyDimModule_basic",
